@@ -5,5 +5,5 @@ from .serializers import EventSerializer
 
 
 class EventViewSet(viewsets.ModelViewSet):
-    queryset = Event.objects.select_for_update().all().order_by("-timestamp")
+    queryset = Event.objects.all()
     serializer_class = EventSerializer
