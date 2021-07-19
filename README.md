@@ -5,7 +5,7 @@
 
 This is a proposed solution to the problem described at [Test.md](Test.md)
 
-## **Modeling the User Interation Event**
+## **Modeling the User Interaction Event**
 
 The model to represent the user behavior **Event** could be like:
 
@@ -19,32 +19,38 @@ Event
    timestamp (Date) [index]
 ```
 
-Where *data* format varies according to the **Event** type, and each *data* format should have its specific validator
+Where *data* format varies according to the **Event** *type*
 
-Each **Event** type is identified by *category*+*name*
+(And each *data* format should have its specific validator)
 
-Some **Event** *category*:
+Each **Event** *type* is identified by *category*+*name*
+
+Some **Event** *category* are:
  - page interaction
  - form interaction
 
-Some **Event** *name*:
+Some **Event** *name* are:
  - pageview
  - cta click
  - submit
 
-So, *form interaction submit* is an **Event**  type which has its own *data* format which has its specific validator
+So, *form interaction submit* is an **Event**  *type* which has its own *data* format which has its specific validator
+
+The field "Application" will not be modeled given the lack of information. Can it possibly be the "trusted clients"?...
+
+Maybe it can be inferred from the request (referrer), maybe from the data payload (host? host+path?)
 
 ## **Load Performance**
 
-To deal with a foresee average of 100 events/second combined with queries demand, there are some possibilities:
+To deal with a foresee average of 100 events/second, combined with queries demand, there are some possibilities:
 
  - use a NoSQL database, like mongodb,
  - to consider Event Sourcing and CQRS technology, segregating queries from commands as the acronym suggests,
  - use some stack to implement queues, perhaps Celery combined with Redis or RabbitMQ,
  - use some cloud queue technology, like AWS SQS, GCP Cloud Tasks or Azure ASQ, or even Kafka.
- - implement kind of a CQRS strategy by receiving all the **Event** requests for register in a dedicated database (or table) and, at another moment, asynchronously, process (parse/validate) the data to another database (or table) optimized for queries (the analytics!)
+ - implement kind of a CQRS strategy by receiving all the **Event** requests for register in a dedicated database (or table) and, at another moment, asynchronously processes (parse/validate) the data to another database (or table) optimized for querie (the analytics!)
 
-We suggest start with the most simple implementation of the last one, i.e,  register the complete **Event** request in a non-blocking manner, leaving the processing (parsing/validation) to be made asynchronously later. This queue of **Event** can be done with the same application database and some cron/command code.
+We suggest to start with the most simple proposed implementation, the last one, i.e,  register the complete **Event** request in a non-blocking manner, leaving the processing (parsing/validation) to be made asynchronously later. This queue of **Event** can be done with the same application database and some cron/command code.
 
 ## **The Development Strategy**
 
