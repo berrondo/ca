@@ -17,6 +17,8 @@ tests:
 
 test: tests
 
+t: tests
+
 run:
 	python manage.py runserver
 

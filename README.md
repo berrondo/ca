@@ -18,14 +18,19 @@ This is a proposed solution to the problem described at [Test.md](Test.md)
 
 ```console
 git clone git@github.com:berrondo/ca.git ca
+
 cd ca
 python -m venv env
 source env/bin/activate
+
 pip install -r requirements-dev.txt
 cp contrib/env_sample .env
+
 python manage.py migrate
 python manage.py createsuperuser --username admin --email a@a.com --no-input
+
 python manage.py test
+
 python manage.py runserver
 ```
 
@@ -50,7 +55,7 @@ Event
 - the "Application" field will not be modeled given the lack of information.
   - can it possibly came from "trusted clients"?...
   - or maybe it can be inferred from the request (referrer), 
-  - or the data payload (host? host+path?)
+  - or the *data* payload (host? host+path?)
 
 Example **Event** *category*:
  - page interaction
@@ -61,7 +66,7 @@ Example **Event** *name*:
  - cta click
  - submit
 
-So, *form interaction submit* is an **Event**  *type* which has its own *data* format which has its specific validator
+So, "*form interaction submit*" is an **Event**  *type* which has its own *data* format which has its specific validator
 
 ## **Performance Constraints**
 
