@@ -1,6 +1,6 @@
 from uuid import UUID
 from django.test import TestCase
-from .models import Event
+from ..models import Event
 
 
 class EventTestCase(TestCase):
