@@ -45,10 +45,11 @@ Event
    category [index]
    name
    data* (Json)
-   timestamp (Date) [index]
+   timestamp (Date) [index] [ordering]
 ```
 
 - indexed fields for query performance
+- ordered by the time they are generated  
 - (*) *data* format varies according to the **Event** *type*
   - each *data* format should have its specific validator
   - each **Event** *type* is identified by *category*+*name*
