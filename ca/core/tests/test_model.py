@@ -3,10 +3,10 @@ from django.test import TestCase
 from ..models import Event
 
 
-class EventTestCase(TestCase):
+class TestEventModel(TestCase):
     def test_create_an_event(self):
         # given
-        self.event = Event(
+        event = Event(
             session_id="e2085be5-9137-4e4e-80b5-f1ffddc25423",
             category="page interaction",
             name="pageview",
@@ -19,7 +19,7 @@ class EventTestCase(TestCase):
         previous_count = Event.objects.count()
 
         # when
-        self.event.save()
+        event.save()
 
         # then
         new_count = Event.objects.count()
