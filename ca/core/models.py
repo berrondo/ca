@@ -11,3 +11,17 @@ class Event(models.Model):
 
     class Meta:
         ordering = ['timestamp']
+
+
+class RawEvent(models.Model):
+    payload = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Status(models.IntegerChoices):
+        RECEIVED = 0
+        PROCESSED = 1
+        INVALID = 2
+    status = models.IntegerField(choices=Status.choices, default=Status.RECEIVED)
+
+    class Meta:
+        ordering = ['-created_at']
