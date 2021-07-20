@@ -10,7 +10,7 @@ class Event(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['timestamp']
+        ordering = ['session_id', 'timestamp']
 
 
 class RawEvent(models.Model):
