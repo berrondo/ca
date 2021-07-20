@@ -23,3 +23,9 @@ run:
 	python manage.py runserver
 
 r: run
+
+migrate:
+	python manage.py migrate
+
+makemi:
+	python manage.py makemigrations
