@@ -8,7 +8,7 @@ from ca.core.models import Event
 class TestEventView(APITransactionTestCase):
     def setUp(self) -> None:
         # given
-        self.url = reverse("event-list")
+        self.list_url = reverse("event-list")
 
         self.body = {
             "session_id": "e2085be5-9137-4e4e-80b5-f1ffddc25423",
@@ -23,10 +23,12 @@ class TestEventView(APITransactionTestCase):
 
         # when
         self.resp = self.client.post(
-            self.url,
+            self.list_url,
             self.body,
             format="json"
         )
+
+        self.detail_url = reverse('event-detail', kwargs={'pk': str(Event.objects.last().pk)})
 
     def test_post_to_create_event(self):
         # then
@@ -40,13 +42,21 @@ class TestEventView(APITransactionTestCase):
         new_body['name'] = new_name
 
         # when
-        put_url = reverse('event-detail', kwargs={'pk': str(Event.objects.last().pk)})
-        put_resp = self.client.put(
-            put_url,
+        resp = self.client.put(
+            self.detail_url,
             new_body,
             format="json",
         )
 
         # then
-        updated_event = self.client.get(put_url)
-        self.assertEqual(put_resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_cannot_delete_event(self):
+        # when
+        resp = self.client.delete(
+            self.detail_url,
+        )
+
+        # then
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
