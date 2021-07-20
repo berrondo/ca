@@ -6,6 +6,7 @@ from .core import views
 
 router = routers.DefaultRouter()
 router.register(r"events", views.EventViewSet)
+router.register(r"raw-events", views.RawEventViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),

@@ -1,11 +1,20 @@
 from rest_framework import viewsets, mixins
+from rest_framework.response import Response
+from rest_framework.status import HTTP_201_CREATED
 
-from ca.core.models import Event
-from ca.core.serializers import EventSerializer
+from ca.core.models import Event, RawEvent
+from ca.core.serializers import EventSerializer, RawEventSerializer
 
-from .models import Event
-from .serializers import EventSerializer
 
+class RawEventViewSet(
+        mixins.RetrieveModelMixin,
+        mixins.ListModelMixin,
+        viewsets.GenericViewSet
+    ):
+    """it's a viewsets.ReadOnlyModelViewSet"""
+
+    queryset = RawEvent.objects.all()
+    serializer_class = RawEventSerializer
 
 
 class EventViewSet(
@@ -17,3 +26,9 @@ class EventViewSet(
 
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+
+    # here is the hack!
+    def create(self, request, *args, **kwargs):
+        """is now used to create a RawEvent instead of an Event!"""
+        RawEvent.objects.create(payload=request.data)
+        return Response(status=HTTP_201_CREATED)

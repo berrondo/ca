@@ -1,5 +1,11 @@
-from .models import Event
+from .models import Event, RawEvent
 from rest_framework import serializers
+
+
+class RawEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RawEvent
+        fields = ["payload", "status", "created_at"]
 
 
 class EventSerializer(serializers.ModelSerializer):
