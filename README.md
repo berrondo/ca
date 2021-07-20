@@ -48,7 +48,8 @@ Event
    timestamp (Date) [index] [ordering]
 ```
 
-- indexed fields for query performance
+- all fields are required!
+- appropriate fields are indexed for query performance
 - ordered by the time they are generated  
 - (*) *data* format varies according to the **Event** *type*
   - each *data* format should have its specific validator
@@ -68,6 +69,14 @@ Example **Event** *name*:
  - submit
 
 So, "*form interaction submit*" is an **Event**  *type* which has its own *data* format which has its specific validator
+
+## **Validations**
+
+how to do it?
+
+## **"Trusted Applications"**
+
+how to do it?
 
 ## **Performance Constraints**
 
@@ -99,7 +108,7 @@ The solution will be presented in **Python** (as demanded) and making use of the
 
 ### **V0**
 
-Fairly naive implementation with only a model, an admin site (so analytics personal can perform queries), and a view/serializer for creation/retrieve through a REsT API.
+Fairly naive implementation with only a model, an admin site (so analytics personal can perform queries), and a view/serializer for creation/retrieve through a ReSTful API.
 
 - default serializer validations
 - indexed fields to speed up queries
@@ -122,6 +131,6 @@ The **Event** is received and registered. After that, the parsing/validation is 
 
 - 
 
-## **The Client**
+## **The Reusable Client (Python)**
 
 Possible clients could be developed in server or client side languages, i.e., python, javascript...
