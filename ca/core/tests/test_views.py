@@ -33,7 +33,7 @@ class TestEventView(APITransactionTestCase):
         self.assertEqual(self.resp.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Event.objects.count(), 1)
 
-    def test_put_to_update_event(self):
+    def test_put_to_update_event_must_be_not_allowed(self):
         # given
         new_body = self.body.copy()
         new_name = 'different pageview'
@@ -49,6 +49,4 @@ class TestEventView(APITransactionTestCase):
 
         # then
         updated_event = self.client.get(put_url)
-        # self.assertEqual(put_resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-        self.assertEqual(put_resp.status_code, status.HTTP_200_OK)
-        self.assertEqual(new_name, updated_event.data['name'])
+        self.assertEqual(put_resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
