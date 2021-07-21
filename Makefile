@@ -15,3 +15,6 @@ migrate:
 
 makemi:
 	python manage.py makemigrations
+
+p:
+	python manage.py process_events
