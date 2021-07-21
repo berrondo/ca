@@ -1,4 +1,6 @@
-from .models import Event, RawEvent
+from django.utils import timezone
+
+from ca.core.models import Event, RawEvent
 from rest_framework import serializers
 
 

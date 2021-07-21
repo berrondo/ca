@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from ca.core.models import RawEvent
-from ca.core.serializers import EventSerializer
+from ca.core.serializers.event_serializers import EventSerializer
 
 
 class Command(BaseCommand):
