@@ -27,10 +27,7 @@ pip install -r requirements-dev.txt
 cp contrib/env_sample .env
 
 python manage.py migrate
-python manage.py createsuperuser --username admin --email a@a.com --no-input
-
 python manage.py test
-
 python manage.py runserver
 ```
 
@@ -44,7 +41,7 @@ To do so, the server side of this monitoring application must expect a large con
 
 The knowledge-base under the names "Event Sourcing" / "CQRS" come to rescue!
 
-Simply put, we will be using the basic "Event Sourcing"'s premise of indefinitely register a stream of events, capable of "to tell a history", and only register them without ever update or delete them, and - by the "CQRS" side,  as the acronym says - the premise of segregation of the responsibility of doing "commands" and "queries" with the data.
+Simply put, we will be using the basic "Event Sourcing"'s premise of indefinitely register a stream of events, capable of "to tell a history", (and only register, without ever update or delete them), and - by the "CQRS" side,  as the acronym says - the premise of segregation of the responsibility of doing "commands" and "queries" with the data.
 
 ## **So, The Assumptions**
 
@@ -128,9 +125,8 @@ Otherwise, there are other possibilities:
 
  - use some stack to implement queues, i.e.: Celery + Redis,
  - use some cloud queue technology, like AWS SQS, GCP Cloud Tasks or Azure ASQ,
- - use a NoSQL database, like mongodb,
- - use ElasticSearch,   
- - use Kafka!
+ - independent specialization of the query or the command side, by using a NoSQL database, like mongodb, or even ElasticSearch,   
+ - for a hardcore stream processing, use Kafka!
 
 ## **The Development Strategy**
 
@@ -140,7 +136,7 @@ The solution will be presented in **Python** (as demanded) and making use of the
 
 ### **V0, the MVP**
 
-Fairly naive implementation with only a model, an admin site (so analytics personal can perform queries), and a view/serializer for creation/retrieve through a ReSTful API.
+Fairly naive implementation with only a model, an admin site (so analytics personal can perform basic queries), and a view/serializer for creation/retrieve through a ReSTful API.
 
 - default serializer validations
 - indexed fields to speed up queries
