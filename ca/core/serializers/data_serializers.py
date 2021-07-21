@@ -3,7 +3,7 @@ from rest_framework import serializers
 from ca.core.serializers.event_serializers import EventSerializer
 
 
-class EventAndDataserializer(EventSerializer):
+class EventAndDataSerializer(EventSerializer):
     @property
     def event_type(self):
         if event := self.initial_data:

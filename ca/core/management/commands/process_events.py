@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from ca.core.models import RawEvent
-from ca.core.serializers.data_serializers import EventAndDataserializer
+from ca.core.serializers.data_serializers import EventAndDataSerializer
 
 
 class Command(BaseCommand):
@@ -10,7 +10,7 @@ class Command(BaseCommand):
         raw_events = RawEvent.objects.filter(status=RawEvent.Status.RECEIVED)
 
         for raw_event in raw_events:
-            serializer = EventAndDataserializer(data=raw_event.payload)
+            serializer = EventAndDataSerializer(data=raw_event.payload)
 
             if serializer.is_valid():
                 if serializer.event_type_data_is_valid():
