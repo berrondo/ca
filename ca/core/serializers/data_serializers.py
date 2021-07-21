@@ -21,7 +21,7 @@ class EventAndDataSerializer(EventSerializer):
 
     @property
     def event_type_data_serializer(self):
-        return _event_type_serializer[self.event_type]
+        return _event_type_serializer.get(self.event_type, MissingCategorySerializer)
 
     def event_type_data_is_valid(self):
         self.instance_event_type_data_serializer = self.event_type_data_serializer(data=self.event_type_data)
@@ -39,6 +39,16 @@ class PageClickSerializer(PageViewSerializer):
 
 class FormSubmitSerializer(PageViewSerializer):
     form = serializers.JSONField()
+
+
+class MissingCategorySerializer():
+    errors = []
+
+    def __init__(self, data):
+        ...
+
+    def is_valid(self):
+        return False
 
 
 _event_type_serializer = {
