@@ -7,6 +7,8 @@ This is a proposed solution to the problem described at [Test.md](Test.md)
 
 ## To run, develop, test...
 
+Make sure you have Python 3.9.6 installed
+
 1. Clone the repo
 2. Create a virtualenv with Python 3.9.6
 3. Activate the virtualenv
@@ -23,7 +25,7 @@ cd ca
 python -m venv env
 source env/bin/activate
 
-pip install -r requirements-dev.txt
+pip install -r requirements.txt
 cp contrib/env_sample .env
 
 python manage.py migrate
