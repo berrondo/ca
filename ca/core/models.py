@@ -21,7 +21,7 @@ class RawEvent(models.Model):
         RECEIVED = 0
         PROCESSED = 1
         INVALID = 2
-    status = models.IntegerField(choices=Status.choices, default=Status.RECEIVED)
+    status = models.IntegerField(choices=Status.choices, default=Status.RECEIVED, db_index=True)
 
     class Meta:
         ordering = ['-created_at']
