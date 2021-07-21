@@ -7,7 +7,7 @@ This is a proposed solution to the problem described at [Test.md](Test.md)
 
 ## To run, develop, test...
 
-Make sure you have Python 3.9.6 installed
+Make sure you have Python 3.9.6 installed.
 
 1. Clone the repo
 2. Create a virtualenv with Python 3.9.6
@@ -43,7 +43,7 @@ To do so, the server side of this monitoring application must expect a large con
 
 The knowledge-base under the names "Event Sourcing" / "CQRS" come to rescue!
 
-Simply put, we will be using the basic "Event Sourcing"'s premise of indefinitely register a stream of events, capable of "to tell a history", (and only register, without ever update or delete them), and - by the "CQRS" side,  as the acronym says - the premise of segregation of the responsibility of doing "commands" and "queries" with the data.
+Simply put, we will be using the basic "Event Sourcing"'s premise of indefinitely register a stream of events, capable of "to tell a history", (and only register, without ever update or delete them), and - by the "CQRS" side,  as the acronym says - the premise of segregation of the responsibility of doing "commands" and "queries" with that data.
 
 ## **So, The Assumptions**
 
@@ -54,6 +54,8 @@ Thinking "Event Sourcing / CQRS", we are assuming that:
 - The Event will be recorded as is, in raw manner, at a specific backend optimized for that. And this is the sole responsibility of that backend.
 
 - The processing - parsing, validation - of the Event will happen later, **commanded** by a scheduled task.
+
+- The frequency and time of that task could be negotiated to fit the needs of the analytics personnel.
 
 - The result of that processing will be available in another specific backend optimized for **queries**.
 
@@ -104,12 +106,22 @@ Event
 
 - So, "*form_interaction.submit*" is an **Event**  *type* which has its own *data* format which has its specific validator
 
+### **Monitoring Errors**
+
+At validation time is when the team can become aware of detected errors, i.e., invalid events received.
+
+For the team to monitor these errors, they will be recorded in the database at the validation time.
+
+Some other things can be done:
+
+- send emails to interested groups,
+- use some registry service such as [Sentry](https://sentry.io/).
+
 ### **"Trusted Applications"**
 
 - the **Event**."Application" field will not be modeled given the lack of information.
   - can it possibly came from "trusted clients"?...
-  - or maybe it can be inferred from the request (referrer), 
-  - or the *data* payload (host? host+path?)
+  - or maybe it can be inferred from the request, or the *data* payload (host? host+path?)
   
 There are various ways to allow only "trusted applications" to send their events to the system (but none will be implemented):
 
