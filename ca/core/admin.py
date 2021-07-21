@@ -23,7 +23,7 @@ admin.site.register(Event, EventAdmin)
 
 
 class RawEventAdmin(MyAdmin, admin.ModelAdmin):
-    fields = ('payload', )
+    fields = ('payload', 'status')
     readonly_fields = fields
     list_display = ('created_at', 'status', 'payload')
     list_filter = ('status', 'created_at')
