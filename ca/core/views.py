@@ -1,6 +1,6 @@
 from rest_framework import viewsets, mixins
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
+from rest_framework import status
 
 from ca.core.models import Event, RawEvent
 from ca.core.serializers.event_serializers import EventSerializer, RawEventSerializer
@@ -30,7 +30,7 @@ class EventViewSet(
     # here is the hack!
     def create(self, request, *args, **kwargs):
         """is now used to create a RawEvent instead of an Event!"""
-        serializer = RawEventSerializer(data=request.data)
-        if serializer.is_valid():
-            return Response(status=HTTP_201_CREATED)
-        return Response(status=HTTP_400_BAD_REQUEST)
+        if request.data:
+            RawEvent.objects.create(payload=request.data)
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
