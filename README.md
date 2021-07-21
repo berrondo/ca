@@ -34,71 +34,103 @@ python manage.py test
 python manage.py runserver
 ```
 
+## **Thinking About The Problem**
+
+Recording how large numbers of users interact with a variety of systems can be challenging.
+
+On the client side, the cost of sending these events should not impact the user experience.
+
+To do so, the server side of this monitoring application must expect a large concurrent flood of these events and to be able to receive and process them without letting the client side and its users experiencing unpleasantness delays, i.e., latency.
+
+The knowledge-base under the names "Event Sourcing" / "CQRS" come to rescue!
+
+Simply put, we will be using the basic "Event Sourcing"'s premise of indefinitely register a stream of events, capable of "to tell a history", and only register them without ever update or delete them, and - by the "CQRS" side,  as the acronym says - the premise of segregation of the responsibility of doing "commands" and "queries" with the data.
+
+## **So, The Assumptions**
+
+Thinking "Event Sourcing / CQRS", we are assuming that:
+
+- The Event record will never change! So the application will not provide the means to do so: no PUT/UPDATE or DELETE.
+
+- The Event will be recorded as is, in raw manner, at a specific backend optimized for that. And this is the sole responsibility of that backend.
+
+- The processing - parsing, validation - of the Event will happen later, **commanded** by a scheduled task.
+
+- The result of that processing will be available in another specific backend optimized for **queries**.
+
+- To facilitate validations, all fields will be considered required.
+
+- This is a toy (naive) implementation, aimed only to demonstrate these assumptions.
+
 ## **Modeling the User Interaction Event**
 
-The model to represent the user behavior **Event** could be like:
+The model to represent the received user behavior **"RawEvent"** would be like:
+
+```
+RawEvent
+   event_payload (Json)
+   status(received, processed, invalid) [index]
+```
+
+After processing, the model to represent the user behavior **Event** could be like:
 
 ```
 Event
    Application (?)
-   session_id (UUID) [index]
+   session_id (UUID) [index] [ordering 1]
    category [index]
    name
    data* (Json)
-   timestamp (Date) [index] [ordering]
+   timestamp (Date) [index] [ordering 2]
 ```
 
 - all fields are required!
 - appropriate fields are indexed for query performance
-- ordered by the time they are generated  
-- (*) *data* format varies according to the **Event** *type*
+- ordered by the time they are generated in a session  
+
+### **Validations**
+
+- (*) **Event**.*data* format varies according to the **Event** *type*
   - each *data* format should have its specific validator
   - each **Event** *type* is identified by *category*+*name*
-- the "Application" field will not be modeled given the lack of information.
+
+- Example **Event** *category*:
+  - page interaction
+  - form interaction
+
+- Example **Event** *name*:
+  - pageview
+  - cta click
+  - submit
+
+- So, "*form_interaction.submit*" is an **Event**  *type* which has its own *data* format which has its specific validator
+
+### **"Trusted Applications"**
+
+- the **Event**."Application" field will not be modeled given the lack of information.
   - can it possibly came from "trusted clients"?...
   - or maybe it can be inferred from the request (referrer), 
   - or the *data* payload (host? host+path?)
+  
+There are various ways to allow only "trusted applications" to send their events to the system (but none will be implemented):
 
-Example **Event** *category*:
- - page interaction
- - form interaction
+- Register applications as users of the system,
 
-Example **Event** *name*:
- - pageview
- - cta click
- - submit
+- Basic authentication token,
 
-So, "*form interaction submit*" is an **Event**  *type* which has its own *data* format which has its specific validator
-
-## **Validations**
-
-how to do it?
-
-## **"Trusted Applications"**
-
-how to do it?
+- List of trusted IPs
 
 ## **Performance Constraints**
 
-To deal with a foresee average of 100 events/second, combined with queries demand, there are some possibilities:
+As stated by our Assumptions, to deal with foresee average of 100 events/second, we are using an "Event Sourcing / CQRS" approach. We believe it also address the Race Condition issue.
 
- - use a NoSQL database, like mongodb,
- - to consider Event Sourcing and CQRS technics, segregating queries from commands as the acronym suggests,
- - use some stack to implement queues, i.e.: Celery combined with Redis or RabbitMQ,
+Otherwise, there are other possibilities:
+
+ - use some stack to implement queues, i.e.: Celery + Redis,
  - use some cloud queue technology, like AWS SQS, GCP Cloud Tasks or Azure ASQ,
+ - use a NoSQL database, like mongodb,
+ - use ElasticSearch,   
  - use Kafka!
- - implement kind of a CQRS strategy by receiving all the **Event** requests for register in a dedicated database (or table) and, at another moment, asynchronously processes (parse/validate) the data to another database (or table) optimized for querie (the analytics!)
-
-We suggest to start with the most simple proposed implementation, the last one, i.e,  register the complete **Event** request in a non-blocking manner, leaving the processing (parsing/validation) to be made asynchronously later. This queue of **Event** can be done with the same application database and some cron/command code.
-
-### Race Condition
-
-Seems like there is no need to edit (update) Event records. They need to be collected "as is", "as they happen", to be queried to produce aggregated numbers that answer the questions like:
-
-- which feature is more used? which is rarely used?
-- in what order are some features used?
-
-So the strategy of segregating register, parse/validation and consulting seems not only to address the issue of responsiveness, but also that of race condition.
 
 ## **The Development Strategy**
 
@@ -106,7 +138,7 @@ So the strategy of segregating register, parse/validation and consulting seems n
 
 The solution will be presented in **Python** (as demanded) and making use of the **Django** web framework and the **Django Rest Framework** for the API construction
 
-### **V0**
+### **V0, the MVP**
 
 Fairly naive implementation with only a model, an admin site (so analytics personal can perform queries), and a view/serializer for creation/retrieve through a ReSTful API.
 
@@ -117,15 +149,16 @@ Fairly naive implementation with only a model, an admin site (so analytics perso
 
 ### **V1**
 
-- better validations
-- read only model
-- no update via API
+- segregation between receiving, processing, and querying events
+- scheduled processing task  
+- read only models
+- no delete/update via API or admin site
 
 ### **V2**
 
-The **Event** is received and registered. After that, the parsing/validation is performed.
-
-- segregation between registering. processing, and consulting events
+- better validations
+- better filtering (search)
+- an example client
 
 ### **Future Versions**
 
