@@ -1,5 +1,10 @@
 from django.test import TestCase
 
+from ca.core.serializers.data_serializers import (
+    PageViewSerializer,
+    PageClickSerializer,
+    FormSubmitSerializer,
+)
 from ca.core.serializers.event_serializers import EventSerializer
 from ca.core.tests import fixtures
 
@@ -19,21 +24,45 @@ class TestEventSerializer(TestCase):
         self.assertEqual(set(serializer.errors), {'timestamp'})
 
 
-class TestRawEventSerializer(TestCase):
-    ...
+class TestDataSerializer(TestCase):
+    def test_path_is_a_required_data_field(self):
+        # given
+        required_field = 'path'
+        data_missing_a_field = fixtures.page_interaction_pageview["data"].copy()
+        del data_missing_a_field[required_field]
+        serializer = PageViewSerializer(data=data_missing_a_field)
 
+        # when
+        serializer.is_valid()
 
-class TestEventAndDataserializer(TestCase):
-    ...
+        # then
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(set(serializer.errors), {required_field})
 
+    def test_element_is_a_required_data_field(self):
+        # given
+        required_field = 'element'
+        data_missing_a_field = fixtures.page_interaction_cta_click["data"].copy()
+        del data_missing_a_field[required_field]
+        serializer = PageClickSerializer(data=data_missing_a_field)
 
-class TestPageViewSerializer(TestCase):
-    ...
+        # when
+        serializer.is_valid()
 
+        # then
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(set(serializer.errors), {required_field})
 
-class TestPageClickSerializer(TestCase):
-    ...
+    def test_form_is_a_required_data_field(self):
+        # given
+        required_field = 'form'
+        data_missing_a_field = fixtures.form_interaction_submit["data"].copy()
+        del data_missing_a_field[required_field]
+        serializer = FormSubmitSerializer(data=data_missing_a_field)
 
+        # when
+        serializer.is_valid()
 
-class TestFormSubmitSerializer(TestCase):
-    ...
+        # then
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(set(serializer.errors), {required_field})
