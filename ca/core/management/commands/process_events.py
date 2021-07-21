@@ -26,4 +26,5 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR(raw_event.payload))
             self.stdout.write(self.style.ERROR(serializer.errors))
             raw_event.status = RawEvent.Status.INVALID
+            raw_event.errors = serializer.errors
             raw_event.save()

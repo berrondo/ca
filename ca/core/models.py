@@ -16,6 +16,7 @@ class Event(models.Model):
 class RawEvent(models.Model):
     payload = models.JSONField()
     created_at = models.DateTimeField(auto_now_add=True)
+    errors = models.CharField(max_length=500, null=True, blank=True)
 
     class Status(models.IntegerChoices):
         RECEIVED = 0
