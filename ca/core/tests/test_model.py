@@ -1,21 +1,14 @@
 from uuid import UUID
 from django.test import TestCase
+
+from . import fixtures
 from ..models import Event
 
 
 class TestEventModel(TestCase):
     def test_create_an_event(self):
         # given
-        event = Event(
-            session_id="e2085be5-9137-4e4e-80b5-f1ffddc25423",
-            category="page interaction",
-            name="pageview",
-            data={
-                "host": "www.example.com",
-                "path": "/"
-            },
-            timestamp="2021-01-01 09:15:27.243860",
-        )
+        event = Event(**fixtures.page_interaction_pageview)
         previous_count = Event.objects.count()
 
         # when
