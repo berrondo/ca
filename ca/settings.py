@@ -29,6 +29,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='', cast=Csv())
 
+DJANGO_SUPERUSER_PASSWORD = 'pass'
 
 # Application definition
 
