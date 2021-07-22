@@ -49,6 +49,22 @@ docker build --tag ca:latest .
 docker run --name ca -d -p 8000:8000 ca:latest
 ```
 
+### **Utilization**
+
+Endpoints:
+- **/events**
+  - to send the events, besides lists them.
+- **/raw-events**
+  - to list received raw events, its processing status, and eventual errors.
+- **/admin**
+  - to consult events and raw events, with some filters.
+  - you'll need to create an admin super user:
+  - ```python manage.py createsuperuser```
+- **/example**
+  - toy client application where you can send user interaction events.
+  - here you can also fire the command to process them.
+  - this example application uses a draft of a reusable client. 
+
 ## **Thinking About The Problem**
 
 Recording how large numbers of users interact with a variety of systems can be challenging.
