@@ -15,6 +15,8 @@ RUN pip install -r requirements.txt
 
 # copy project
 COPY . /usr/src/app
+COPY ./contrib/env_sample /usr/src/app/.env
+RUN python manage.py migrate
 
 EXPOSE 8000
 

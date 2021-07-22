@@ -7,7 +7,7 @@ from rest_framework import serializers
 class RawEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = RawEvent
-        fields = ["payload", "status", "created_at"]
+        fields = ["payload", "status", "created_at", "errors"]
 
 
 class EventSerializer(serializers.ModelSerializer):

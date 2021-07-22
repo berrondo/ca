@@ -23,8 +23,8 @@ class Command(BaseCommand):
                 else:
                     serializer = serializer.instance_event_type_data_serializer
 
-            self.stdout.write(self.style.ERROR(raw_event.payload))
-            self.stdout.write(self.style.ERROR(serializer.errors))
+            self.stdout.write(self.style.ERROR(str(raw_event.payload)))
+            self.stdout.write(self.style.ERROR(str(serializer.errors)))
             raw_event.status = RawEvent.Status.INVALID
             raw_event.errors = serializer.errors
             raw_event.save()
