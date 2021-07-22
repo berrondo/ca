@@ -33,6 +33,22 @@ python manage.py test
 python manage.py runserver
 ```
 
+### Docker
+
+To run with docker you must have python and docker installed and do:
+
+```console
+# after clone the repo an change the directory:
+git clone git@github.com:berrondo/ca.git ca
+cd ca
+
+# build the image:
+docker build --tag ca:latest .
+
+# run the container:
+docker run --name ca -d -p 8000:8000 ca:latest
+```
+
 ## **Thinking About The Problem**
 
 Recording how large numbers of users interact with a variety of systems can be challenging.
@@ -167,13 +183,16 @@ Fairly naive implementation with only a model, an admin site (so analytics perso
 ### **V2**
 
 - better validations
-- better filtering (search)
 - an example client
+- docker
 
-### **Future Versions**
+### **What was missing**
 
-- 
+- API filtering
+- login registered applications
 
 ## **The Reusable Client (Python)**
 
-Possible clients could be developed in server or client side languages, i.e., python, javascript...
+Possible clients could be developed in server or client side languages, i.e., Python, JavaScript.
+
+A very simple Python reusable client and a dummy example application are included to demonstrate how it can be done.
